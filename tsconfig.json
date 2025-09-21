@@ -2,5 +2,24 @@
   "extends": "./tsconfig.base.json",
   "compileOnSave": false,
   "files": [],
-  "references": []
+  "references": [
+    {
+      "path": "./apps/frontend-e2e"
+    },
+    {
+      "path": "./apps/frontend"
+    },
+    {
+      "path": "./apps/services/api-gateway-e2e"
+    },
+    {
+      "path": "./apps/services/api-gateway"
+    },
+    {
+      "path": "./apps/services/auth-service-e2e"
+    },
+    {
+      "path": "./apps/services/auth-service"
+    }
+  ]
 }
