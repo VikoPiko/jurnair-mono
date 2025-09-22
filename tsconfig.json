@@ -20,6 +20,12 @@
     },
     {
       "path": "./apps/services/auth-service"
+    },
+    {
+      "path": "./apps/services/message-service-e2e"
+    },
+    {
+      "path": "./apps/services/message-service"
     }
   ]
 }

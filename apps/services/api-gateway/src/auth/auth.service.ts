@@ -6,9 +6,8 @@ import { lastValueFrom } from 'rxjs';
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject('AUTH_SERVICE') private readonly client: ClientProxy
-  ) // private jwtService: JwtService
-  {}
+    @Inject('AUTH_SERVICE') private readonly client: ClientProxy // private jwtService: JwtService
+  ) {}
 
   sendHello() {
     this.client.emit('hello', { message: 'helloworld' });
@@ -23,7 +22,7 @@ export class AuthService {
   async signup(user: any) {
     return await lastValueFrom(
       this.client.send('sign-up', {
-        username: user.username,
+        username: user.email,
         password: user.password,
       })
     );

@@ -61,7 +61,9 @@
       },
       "exclude": [
         "apps/services/api-gateway-e2e/**/*",
-        "apps/services/auth-service-e2e/**/*"
+        "apps/services/auth-service-e2e/**/*",
+        "apps/message-service-e2e/**/*",
+        "apps/services/message-service-e2e/**/*"
       ]
     },
     {

@@ -6,22 +6,23 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
-import { MicroserviceOptions } from '@nestjs/microservices';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
-    AppModule,
-    {
-      options: {
-        urls: ['amqp://guest:guest@localhost:5672'],
-        queue: 'auth_queue',
-        queueOptions: {
-          durable: true,
-        },
+  const app = await NestFactory.create(AppModule);
+  app.connectMicroservice<MicroserviceOptions>({
+    transport: Transport.RMQ,
+    options: {
+      urls: ['amqp://guest:guest@localhost:5672'],
+      queue: 'auth_queue',
+      queueOptions: {
+        durable: true,
       },
-    }
-  );
-  await app.listen();
+    },
+  });
+
+  app.startAllMicroservices();
+  await app.listen(3003);
   Logger.log(`🚀 AUTH is listening on RMQ`);
 }
 

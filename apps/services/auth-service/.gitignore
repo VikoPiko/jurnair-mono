@@ -2,4 +2,8 @@ node_modules
 # Keep environment variables out of version control
 .env
 
+
+public.key
+private.key
+
 /src/generated/prisma

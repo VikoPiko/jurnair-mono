@@ -3,6 +3,9 @@ import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 
+import * as fs from 'fs';
+import path from 'path';
+
 @Injectable()
 export class AppService {
   constructor(
@@ -11,7 +14,11 @@ export class AppService {
   ) {}
 
   getData(): { message: string } {
-    return { message: 'Hello API' };
+    const public_key = fs.readFileSync(
+      path.join(__dirname, '..', 'public.key'),
+      'utf-8'
+    );
+    return { message: public_key };
   }
 
   async signup(user: any) {
@@ -39,11 +46,11 @@ export class AppService {
   }
 
   async login(user: any) {
-    console.log(`User received - login: ${user.username}; ${user.password}`);
+    console.log(`User received - login: ${user.email}; ${user.password}`);
     try {
       const dbUser = await this.prismaService.user.findUnique({
         where: {
-          email: user.username,
+          email: user.email,
         },
       });
       if (!dbUser) {

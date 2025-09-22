@@ -32,7 +32,7 @@ const page = () => {
         headers: {
           'content-type': 'application/json',
         },
-        body: JSON.stringify({ username: email, password: password }),
+        body: JSON.stringify({ email: email, password: password }),
       });
       if (!res.ok) {
         return 'Error during signup';
@@ -67,7 +67,7 @@ const page = () => {
           'Content-Type': 'application/json',
         },
         credentials: 'include',
-        body: JSON.stringify({ username: email, password: password }),
+        body: JSON.stringify({ email: email, password: password }),
       });
       if (!res.ok) {
         console.log('oopsies');
@@ -75,6 +75,21 @@ const page = () => {
       const data = await res.json();
       console.log(data);
       return data;
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const tryProtected = async () => {
+    try {
+      const res = await fetch('http://localhost:3001/auth/protected', {
+        credentials: 'include',
+      });
+      if (!res.ok) {
+        console.log('smthn broke boss');
+      }
+      const message = await res.json();
+      console.log(message);
     } catch (error) {
       console.error(error);
     }
@@ -113,6 +128,7 @@ const page = () => {
         <button onClick={() => handleSign(email, password)}>sign</button>
         <button onClick={() => handleLogin(email, password)}>login</button>
         <button onClick={getAllUsers}>getUsers</button>
+        <button onClick={tryProtected}>tryProtected</button>
       </div>
     </div>
   );
