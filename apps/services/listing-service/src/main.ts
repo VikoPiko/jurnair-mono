@@ -6,28 +6,29 @@
 import { Logger } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app/app.module';
+
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
   // if running rabbitmq with docker setup environment vars in docker-compose and replace localhost: amqp://user:password@localhost:5672
-  const url = process.env.RABBITMQ_URL || 'amqp://localhost:5672';
+  const url = process.env.RABBITMQ_URL || 'amqp://guest:guest@localhost:5672';
 
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.RMQ,
-    options: {
-      urls: [`${url}`],
-      queue: 'auth_queue',
-      queueOptions: {
-        durable: true,
+  const app = await NestFactory.createMicroservice<MicroserviceOptions>(
+    AppModule,
+    {
+      transport: Transport.RMQ,
+      options: {
+        urls: [`${url}`],
+        queue: 'property_queue',
+        queueOptions: {
+          durable: true,
+        },
       },
-    },
-  });
+    }
+  );
 
-  app.startAllMicroservices();
-  await app.listen(3003);
-  Logger.log(`🚀 AUTH is listening on RMQ`);
+  await app.listen();
+  Logger.log(`Listing_Service is running...`);
 }
 
 bootstrap();

@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  // output   = "../src/generated/prisma"
+  output   = "../src/generated/prisma/auth-service"
 }
 
 datasource db {
@@ -24,4 +24,12 @@ model user {
   dateOfBirth DateTime?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  bio String @default("")
+  role Roles @default(USER)
+}
+
+enum Roles{
+  USER
+  HOST
+  ADMIN
 }

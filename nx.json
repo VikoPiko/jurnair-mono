@@ -36,7 +36,7 @@
       "options": {
         "startTargetName": "start",
         "buildTargetName": "build",
-        "devTargetName": "serve",
+        "devTargetName": "dev",
         "serveStaticTargetName": "serve-static",
         "buildDepsTargetName": "build-deps",
         "watchDepsTargetName": "watch-deps"
@@ -63,7 +63,8 @@
         "apps/services/api-gateway-e2e/**/*",
         "apps/services/auth-service-e2e/**/*",
         "apps/message-service-e2e/**/*",
-        "apps/services/message-service-e2e/**/*"
+        "apps/services/message-service-e2e/**/*",
+        "apps/services/listing-service-e2e/**/*"
       ]
     },
     {

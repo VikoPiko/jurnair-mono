@@ -61,4 +61,10 @@ export class AuthController {
   async handleGetUsers() {
     return this.authService.getUsers();
   }
+
+  @Post('create-host')
+  async handleUpdateToHost(@Body() userData: any) {
+    console.log(`GW recieved: ${userData}`);
+    return await this.authService.updateToHost(userData);
+  }
 }

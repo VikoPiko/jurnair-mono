@@ -1,0 +1,89 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma/listing-service"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id String @id @default(uuid())
+  title String
+  description String
+  location String
+  lat String
+  lng String
+  images String[]
+
+  hostId String
+  host Host @relation(fields: [hostId], references: [id])
+
+  listings Listing[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Listing {
+  id String @id @default(uuid())
+  propertyId String
+  property Property @relation(fields: [propertyId], references: [id])
+
+  title String
+  description String
+  roomType RoomType
+  pricePerNight Float
+  bedrooms Int
+  bathrooms Int
+  guests Int
+  images String[]
+  amenities String[]
+  checkIn DateTime
+  checkOut DateTime
+  houseRules String[]
+  rating Float
+  reviewCount Int
+  isDeleted Boolean @default(false)
+  favoritedBy String[]
+  reviews ListingReview[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model ListingReview{
+  id String @id @default(uuid())
+  user String
+  content String
+  rating Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  listingId String
+  listing Listing @relation(fields: [listingId], references: [id])
+}
+
+model Host {
+  id String @id @default(uuid())
+  hostId String @unique
+  firstName String
+  lastName String
+  email String
+  avatarUrl String?
+
+  propertyId Property[]
+}
+
+enum RoomType {
+  APARTMENT
+  HOUSE
+  PRIVATE_ROOM
+  SHARED_ROOM
+}

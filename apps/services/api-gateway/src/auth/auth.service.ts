@@ -6,8 +6,23 @@ import { lastValueFrom } from 'rxjs';
 @Injectable()
 export class AuthService {
   constructor(
-    @Inject('AUTH_SERVICE') private readonly client: ClientProxy // private jwtService: JwtService
+    @Inject('AUTH_SERVICE') private readonly client: ClientProxy, // private jwtService: JwtService
+    @Inject('HOST_SERVICE') private readonly hostClient: ClientProxy
   ) {}
+
+  async updateToHost(data: any) {
+    const authHost = await lastValueFrom(
+      this.client.send('upgrade-to-host', data)
+    );
+    if (!authHost) return null;
+    console.log('returned: ', authHost);
+    const propertyHost = await lastValueFrom(
+      this.hostClient.send('host-created', authHost)
+    );
+    console.log('propHost: ', propertyHost);
+    if (!propertyHost) return null;
+    return authHost;
+  }
 
   sendHello() {
     this.client.emit('hello', { message: 'helloworld' });

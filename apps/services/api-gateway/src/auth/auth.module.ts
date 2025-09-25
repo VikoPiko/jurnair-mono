@@ -24,6 +24,17 @@ import { JwtModule } from '@nestjs/jwt';
           },
         },
       },
+      {
+        name: 'HOST_SERVICE',
+        transport: Transport.RMQ,
+        options: {
+          urls: ['amqp://guest:guest@localhost:5672'],
+          queue: 'property_queue',
+          queueOptions: {
+            durable: true,
+          },
+        },
+      },
     ]),
   ],
   controllers: [AuthController],

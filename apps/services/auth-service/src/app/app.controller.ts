@@ -36,4 +36,9 @@ export class AppController {
   async getUsers(@Payload() data: any) {
     return await this.appService.getUsers();
   }
+  @MessagePattern('upgrade-to-host')
+  async upgradeToHost(@Payload() data: any) {
+    console.log('Auth recieved: ', data);
+    return await this.appService.upgrateToHost(data);
+  }
 }

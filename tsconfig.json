@@ -26,6 +26,12 @@
     },
     {
       "path": "./apps/services/message-service"
+    },
+    {
+      "path": "./apps/services/listing-service-e2e"
+    },
+    {
+      "path": "./apps/services/listing-service"
     }
   ]
 }

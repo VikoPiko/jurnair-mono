@@ -21,6 +21,25 @@ export class AppService {
     return { message: public_key };
   }
 
+  async upgrateToHost(data: any) {
+    try {
+      const newHost = await this.prismaService.user.update({
+        where: {
+          id: data.id,
+        },
+        data: {
+          role: 'HOST',
+        },
+      });
+      if (!newHost) throw new Error('error during creation');
+      console.log('new host data: ', newHost);
+      return newHost;
+    } catch (error) {
+      console.error('Error upserting host:', error);
+      throw error;
+    }
+  }
+
   async signup(user: any) {
     try {
       console.log(
