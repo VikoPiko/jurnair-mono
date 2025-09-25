@@ -16,6 +16,10 @@ async function bootstrap() {
     credentials: true,
   });
   app.use(cookieParser());
+  // const authGuard = app.get(AuthGuard);
+
+  // Apply globally
+  // app.useGlobalGuards(authGuard);
   await app.listen(port);
   Logger.log(`🚀 Gateway is running on: http://localhost:${port}`);
 }

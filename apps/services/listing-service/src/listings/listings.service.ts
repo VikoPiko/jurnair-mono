@@ -20,4 +20,14 @@ export class ListingsService {
       throw new Error(`${error}`);
     }
   }
+
+  async getListings() {
+    try {
+      const listings = await this.prismaService.listing.findMany();
+      console.log('Listings: ', listings);
+      return listings;
+    } catch (error) {
+      throw new Error(`${error}`);
+    }
+  }
 }

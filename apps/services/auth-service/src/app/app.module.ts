@@ -7,6 +7,7 @@ import { JwksModule } from '../jwks/jwks.module';
 import * as fs from 'fs';
 
 import path from 'path';
+import { UsersModule } from '../users/users.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import path from 'path';
       },
     }),
     PrismaModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],

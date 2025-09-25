@@ -2,12 +2,17 @@ import { Controller } from '@nestjs/common';
 import { ListingsService } from './listings.service';
 import { MessagePattern, Payload } from '@nestjs/microservices';
 
-@Controller('listings')
+@Controller()
 export class ListingsController {
   constructor(private readonly listingsService: ListingsService) {}
 
-  @MessagePattern('create-listing')
+  @MessagePattern('listing-created')
   createListing(@Payload() listing: any) {
     return this.listingsService.createListing(listing);
+  }
+
+  @MessagePattern('get-listings')
+  getListings() {
+    return this.listingsService.getListings();
   }
 }

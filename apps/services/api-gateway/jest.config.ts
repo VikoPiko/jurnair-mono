@@ -16,6 +16,8 @@ export default {
   transform: {
     '^.+\\.[tj]s$': ['@swc/jest', swcJestConfig],
   },
+  tranformIgnorePatterns: ['node_modules/(?!(jose)/)'],
+  extensionsToTreatAsEsm: ['.ts'],
   moduleFileExtensions: ['ts', 'js', 'html'],
   coverageDirectory: 'test-output/jest/coverage',
 };
