@@ -39,8 +39,15 @@ export class PropertyService {
 
   async createProperty(data: any) {
     try {
-      const host = await this.prismaService.host.findUnique({
+      const host = await this.prismaService.host.upsert({
         where: { hostId: data.hostId },
+        update: {},
+        create: {
+          hostId: data.hostId,
+          firstName: data.firstName || '',
+          lastName: data.lastName || '',
+          email: data.email,
+        },
       });
 
       if (!host) throw new Error('Host does not exist!');
@@ -57,10 +64,11 @@ export class PropertyService {
         },
       });
 
-      console.log('created: ', property);
+      console.log('created: ', { property });
       return property;
-    } catch (error) {
-      throw new Error(`Error: ${error}`);
+    } catch (error: any) {
+      console.error('Error creating property:', error);
+      throw new Error(`Error creating property: ${error.message || error}`);
     }
   }
 }

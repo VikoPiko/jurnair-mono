@@ -23,7 +23,28 @@ export class ListingsService {
 
   async getListings() {
     try {
-      const listings = await this.prismaService.listing.findMany();
+      const listings = await this.prismaService.listing.findMany({
+        where: { isDeleted: false },
+        include: {
+          property: {
+            select: {
+              id: true,
+              title: true,
+              description: true,
+              lat: true,
+              lng: true,
+              host: {
+                select: {
+                  firstName: true,
+                  lastName: true,
+                  email: true,
+                  avatarUrl: true,
+                },
+              },
+            },
+          },
+        },
+      });
       console.log('Listings: ', listings);
       return listings;
     } catch (error) {

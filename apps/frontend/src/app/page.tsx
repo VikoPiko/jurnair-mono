@@ -1,137 +1,88 @@
-'use client';
+'use client'; // Next.js 13+ App Router, client component
 
-import React, { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
+import { io, Socket } from 'socket.io-client';
 
-const Page = () => {
-  const [response, setRes] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+interface Message {
+  from: string;
+  message: string;
+}
 
-  const handleResponse = async () => {
-    try {
-      const res = await fetch('http://localhost:3001/auth/test');
+export default function MessagingPage() {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [input, setInput] = useState('');
+  const [recipientId, setRecipientId] = useState('456'); // example recipient
+  const socketRef = useRef<Socket | null>(null);
 
-      if (!res.ok) {
-        console.log('OOPSIEE');
-      }
-      const data = await res.json();
-      setRes(data.message);
-    } catch (error) {
-      console.log('Error', error);
-    }
-  };
+  useEffect(() => {
+    // Connect to WS server
+    const socket = io('http://localhost:3333', {
+      query: { userId: '123' }, // current user
+    });
 
-  const reset = () => {
-    setRes('');
-  };
+    socket.on('connect', () => console.log('Connected to WS server'));
 
-  const handleSign = async (email: string, password: string) => {
-    try {
-      const res = await fetch('http://localhost:3001/auth/signup', {
-        method: 'POST',
-        headers: {
-          'content-type': 'application/json',
-        },
-        body: JSON.stringify({ email: email, password: password }),
+    socket.on('receive_message', (data: Message) => {
+      setMessages((prev) => [...prev, data]);
+    });
+
+    socketRef.current = socket;
+
+    // Cleanup on unmount
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  const sendMessage = () => {
+    if (socketRef.current && input.trim() !== '') {
+      socketRef.current.emit('send_message', {
+        recipientId,
+        message: input,
       });
-      if (!res.ok) {
-        return 'Error during signup';
-      }
-      const data = await res.json();
-      console.log(`Returned new user: `, data);
-      return data;
-    } catch (error) {
-      console.error(error);
-      return 'error';
-    }
-  };
-
-  const getAllUsers = async () => {
-    try {
-      const res = await fetch('http://localhost:3001/auth/get-users');
-      if (!res.ok) {
-        console.error('yo smthn not workinn');
-      }
-      const data = await res.json();
-      console.log(`Users: `, data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleLogin = async (email: string, password: string) => {
-    try {
-      const res = await fetch('http://localhost:3001/auth/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-        body: JSON.stringify({ email: email, password: password }),
-      });
-      if (!res.ok) {
-        console.log('oopsies');
-      }
-      const data = await res.json();
-      console.log(data);
-      return data;
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
-  const tryProtected = async () => {
-    try {
-      const res = await fetch('http://localhost:3001/auth/protected', {
-        credentials: 'include',
-      });
-      if (!res.ok) {
-        console.log('smthn broke boss');
-      }
-      const message = await res.json();
-      console.log(message);
-    } catch (error) {
-      console.error(error);
+      setMessages((prev) => [...prev, { from: 'Me', message: input }]);
+      setInput('');
     }
   };
 
   return (
-    <div className="text-xl font-bold text-black">
-      {response ? <div>{response}</div> : <h1>No fetch yet...</h1>}
+    <div className="p-4 max-w-md mx-auto">
+      <h1 className="text-xl font-bold mb-4">Messaging</h1>
 
-      <form>
-        <div className="flex my-2 gap-4">
-          <label htmlFor="email">Email</label>
-          <input
-            type="text"
-            name="email"
-            id="email"
-            className="border border-black"
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </div>
-        <div className="flex my-2 gap-4">
-          <label htmlFor="password">Password</label>
-          <input
-            type="text"
-            className="border border-black"
-            name="password"
-            id="password"
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-      </form>
+      <div className="mb-2">
+        <label className="block mb-1">Recipient ID:</label>
+        <input
+          type="text"
+          value={recipientId}
+          onChange={(e) => setRecipientId(e.target.value)}
+          className="border p-2 w-full"
+        />
+      </div>
 
-      <div className="flex flex-col items-center justify-center m-2 p-1">
-        <button onClick={handleResponse}>Run test</button>
-        <button onClick={reset}>Reset</button>
-        <button onClick={() => handleSign(email, password)}>sign</button>
-        <button onClick={() => handleLogin(email, password)}>login</button>
-        <button onClick={getAllUsers}>getUsers</button>
-        <button onClick={tryProtected}>tryProtected</button>
+      <div className="border p-2 h-64 overflow-y-auto mb-2">
+        {messages.map((msg, idx) => (
+          <div key={idx}>
+            <strong>{msg.from}: </strong>
+            <span>{msg.message}</span>
+          </div>
+        ))}
+      </div>
+
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          className="border p-2 flex-1"
+          placeholder="Type a message..."
+        />
+        <button
+          onClick={sendMessage}
+          className="bg-blue-500 text-white px-4 py-2 rounded"
+        >
+          Send
+        </button>
       </div>
     </div>
   );
-};
-
-export default Page;
+}

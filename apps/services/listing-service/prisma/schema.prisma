@@ -39,6 +39,8 @@ model Listing {
   title String
   description String
   roomType RoomType
+  address String @default("")
+  location String @default("")
   pricePerNight Float
   bedrooms Int
   bathrooms Int
