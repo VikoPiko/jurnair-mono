@@ -23,7 +23,7 @@
   </ol>
 </details>
 
-
+Initial Repository (Non microservice split) -> https://github.com/VikoPiko/Jurnair
 
 <!-- ABOUT THE PROJECT -->
 ### Idea
